@@ -541,7 +541,7 @@ class DataRecordForm(tk.Frame):
             if hasattr(widget.input, 'trigger_focusout_validation'):
                 widget.input.trigger_focusout_validation()
             if widget.error.get():
-                errfffors[key] = widget.error.get()
+                errors[key] = widget.error.get()
 
         return errors
 
