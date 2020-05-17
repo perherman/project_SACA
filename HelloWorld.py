@@ -13,7 +13,7 @@ button2 = Button(root, text = "Avbryt")
 
 label2 = Label(root, text = "Checking Swedish Addresses")
 
-enter = Entry(root, text = "Ange adress!")
+enter = Entry(root, text = "Ange en extra adress!")
 
 label.pack()# places the label widget onto parent widget,  screen
 label2.pack()
