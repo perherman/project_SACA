@@ -360,7 +360,7 @@ class DataRecordForm(tk.Frame):
             input_class=RequiredEntry,
             input_var=tk.StringVar()
         )
-        self.inputs['street'].grid(row=0, column=1)
+        self.inputs['street'].grid(row=0, column=0,sticky="we")
 
         # line 2
         self.inputs['postalcode'] = LabelInput(
@@ -448,7 +448,7 @@ class Application(tk.Tk):
 
         self.savebutton = ttk.Button(self, text="Save", command=self.on_save)
         #self.savebutton.grid(sticky=tk.E, row=2, padx=10)
-        self.savebutton.grid(sticky="w", row=2, padx=10)
+        self.savebutton.grid(sticky="e", row=2, column=2, padx=10)
 
         # status bar
         self.status = tk.StringVar()

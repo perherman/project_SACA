@@ -16,9 +16,6 @@ data = {
     'api_key': '3bb5596dd455959defeb3cd2085c871e'
 }
 
-{'street': 'Vassevägen 11', 'postalcode': '51930', 'locality': 'Horred', 'response_format': 'json', 'api_key': '3bb5596dd455959defeb3cd2085c871e'}
-
-
 print(data)
 response = requests.post('https://valid.geposit.se/1.7/validate/address/se', data=data)
 response.raise_for_status()
