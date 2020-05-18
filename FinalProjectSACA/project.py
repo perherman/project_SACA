@@ -356,7 +356,7 @@ class DataRecordForm(tk.Frame):
        # self.inputs['Country Code'].grid(row=0, column=0)
 
         self.inputs['street'] = LabelInput(
-            recordinfo, "Postal Address",
+            recordinfo, "Street",
             input_class=RequiredEntry,
             input_var=tk.StringVar()
         )
@@ -364,7 +364,7 @@ class DataRecordForm(tk.Frame):
 
         # line 2
         self.inputs['postalcode'] = LabelInput(
-            recordinfo, "Zip Code",
+            recordinfo, "Postal Code",
             input_class=ValidatedCombobox,  ##dropdown list of zip codes, but it is slow!
             input_var=tk.StringVar(),
             input_args={"values": [str(x) for x in range(10000, 99999, 1)]}
