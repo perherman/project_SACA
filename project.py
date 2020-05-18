@@ -12,6 +12,7 @@ import csv
 import tkinter as tk
 from tkinter import ttk
 from decimal import Decimal, InvalidOperation
+import requests
 
 ##################
 # Widget Classes #
@@ -346,24 +347,24 @@ class DataRecordForm(tk.Frame):
         recordinfo = tk.LabelFrame(self, text="Record Information")
 
         # line 1
-        self.inputs['Country Code'] = LabelInput(
-            recordinfo, "Country Code",
-            input_class=ValidatedCombobox,
-            input_var=tk.StringVar(),
-            input_args = {"values": ["SE", "NO", "DK", "FI"]}
-        )
-        self.inputs['Country Code'].grid(row=0, column=0)
+       # self.inputs['Country Code'] = LabelInput(
+       #     recordinfo, "Country Code",
+       #     input_class=ValidatedCombobox,
+       #     input_var=tk.StringVar(),
+       #     input_args = {"values": ["SE", "NO", "DK", "FI"]}
+       # )
+       # self.inputs['Country Code'].grid(row=0, column=0)
 
-        self.inputs['Postal Address'] = LabelInput(
-            recordinfo, "Postal Address",
+        self.inputs['street'] = LabelInput(
+            recordinfo, "Street",
             input_class=RequiredEntry,
             input_var=tk.StringVar()
         )
-        self.inputs['Postal Address'].grid(row=0, column=1)
+        self.inputs['street'].grid(row=0, column=1)
 
         # line 2
-        self.inputs['Zip Code'] = LabelInput(
-            recordinfo, "Zip Code",
+        self.inputs['postalcode'] = LabelInput(
+            recordinfo, "Postal Code",
             input_class=ValidatedCombobox,  ##dropdown list of zip codes, but it is slow!
             input_var=tk.StringVar(),
             input_args={"values": [str(x) for x in range(10000, 99999, 1)]}
@@ -371,15 +372,15 @@ class DataRecordForm(tk.Frame):
             #input_var = tk.IntVar(),
             #input_args = {"from_": '10000', "to": '99999', "increment": '1'}
         )
-        self.inputs['Zip Code'].grid(row=1, column=0)
+        self.inputs['postalcode'].grid(row=1, column=0)
 
 
-        self.inputs['Locality'] = LabelInput(
+        self.inputs['locality'] = LabelInput(
             recordinfo, "Locality",
             input_class=RequiredEntry,
             input_var=tk.StringVar()
         )
-        self.inputs['Locality'].grid(row=1, column=1)
+        self.inputs['locality'].grid(row=1, column=1)
 
         #recordinfo.grid(row=0, column=0, sticky=(tk.W + tk.E))
         recordinfo.grid(row=1, column=0, sticky="we")
@@ -403,17 +404,17 @@ class DataRecordForm(tk.Frame):
         """Resets the form entries"""
 
         # gather the default entered value
-        c_code = self.inputs['Country Code'].get()
+        #c_code = self.inputs['Country Code'].get()
 
         # clear all values
         for widget in self.inputs.values():
             widget.set('')
 
-        self.inputs['Country Code'].input.focus()
+        #self.inputs['Country Code'].input.focus()
 
-        if c_code not in ('',):
-            self.inputs['Country Code'].set(c_code)
-            self.inputs['Postal Address'].input.focus()
+        #if c_code not in ('',):
+        #    self.inputs['Country Code'].set(c_code)
+        #    self.inputs['Postal Address'].input.focus()
 
 
     def get_errors(self):
@@ -442,9 +443,12 @@ class Application(tk.Tk):
         self.recordform = DataRecordForm(self)
         self.recordform.grid(row=1, padx=10)
 
+        self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
+        self.checkbutton.grid(sticky="e",row=2, padx=10)
+
         self.savebutton = ttk.Button(self, text="Save", command=self.on_save)
         #self.savebutton.grid(sticky=tk.E, row=2, padx=10)
-        self.savebutton.grid(sticky="e", row=2, padx=10)
+        self.savebutton.grid(sticky="w", row=2, padx=10)
 
         # status bar
         self.status = tk.StringVar()
@@ -453,6 +457,51 @@ class Application(tk.Tk):
         self.statusbar.grid(sticky="we", row=3, padx=10)
 
         self.records_saved = 0
+        self.records_checked = 0
+
+    def on_check(self):
+        '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
+        string with API-key'''
+
+
+        errors = self.recordform.get_errors()
+        if errors:
+            self.status.set(
+                "Cannot check, error in fields: {}"
+                    .format(', '.join(errors.keys()))
+            )
+            return False
+
+        data = self.recordform.get()
+        print(data)
+
+        data.update({'response_format': 'json' , 'api_key': '3bb5596dd455959defeb3cd2085c871e'})
+
+        #print(data) #test to see if it appends correctly
+
+        self.records_checked += 1
+        self.status.set(
+            "{} records checked this session".format(self.records_checked))
+
+        response = requests.post('https://valid.geposit.se/1.7/validate/address/se', data=data)
+        response.raise_for_status()
+        data = response.json()
+
+        if ((int)(data['response']['is_valid']) == 1):
+            print("Address is correct")
+            self.status.set("Address is correct")
+            # print(data)
+        else:
+            print("Address is incorrect")
+            error=str(data['response']['errors'])
+            self.status.set("Address is incorrect, Error: " + error)
+
+            print("Errors in address")
+            print(data['response']['errors'])
+
+            print("Suggestion(s) to use instead:")
+            print(data['response']['suggestions'])
+
 
     def on_save(self):
         """Handles save button clicks"""
@@ -475,6 +524,7 @@ class Application(tk.Tk):
         newfile = not os.path.exists(filename)
 
         data = self.recordform.get()
+        print(data)
 
         with open(filename, 'a') as fh:
             csvwriter = csv.DictWriter(fh, fieldnames=data.keys())
