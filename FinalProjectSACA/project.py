@@ -356,7 +356,7 @@ class DataRecordForm(tk.Frame):
        # self.inputs['Country Code'].grid(row=0, column=0)
 
         self.inputs['street'] = LabelInput(
-            recordinfo, "Street",
+            recordinfo, "Postal Address",
             input_class=RequiredEntry,
             input_var=tk.StringVar()
         )
@@ -431,6 +431,7 @@ class DataRecordForm(tk.Frame):
 
 class Application(tk.Tk):
     """Application root window"""
+    #modified and adapted to work with checking postal addresses at geposit.se
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -447,7 +448,6 @@ class Application(tk.Tk):
         self.checkbutton.grid(sticky="e",row=2, padx=10)
 
         self.savebutton = ttk.Button(self, text="Save", command=self.on_save)
-        #self.savebutton.grid(sticky=tk.E, row=2, padx=10)
         self.savebutton.grid(sticky="e", row=2, column=2, padx=10)
 
         # status bar
@@ -462,6 +462,7 @@ class Application(tk.Tk):
     def on_check(self):
         '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
         string with API-key'''
+        #New function - Per-Olof Hermansson 2020
 
 
         errors = self.recordform.get_errors()
@@ -473,8 +474,8 @@ class Application(tk.Tk):
             return False
 
         data = self.recordform.get()
-        print(data)
-
+        #print(data) # print to test function during development
+        # append format (json) and API-key to data in order to get the call to succeed.
         data.update({'response_format': 'json' , 'api_key': '3bb5596dd455959defeb3cd2085c871e'})
 
         #print(data) #test to see if it appends correctly
@@ -482,9 +483,10 @@ class Application(tk.Tk):
         self.records_checked += 1
         self.status.set(
             "{} records checked this session".format(self.records_checked))
-
+        #use data from record to check address with geposit.se
         response = requests.post('https://valid.geposit.se/1.7/validate/address/se', data=data)
         response.raise_for_status()
+        #receive data back from geposit.se and assign it to data
         data = response.json()
 
         if ((int)(data['response']['is_valid']) == 1):
@@ -492,15 +494,15 @@ class Application(tk.Tk):
             self.status.set("Address is correct")
             # print(data)
         else:
-            print("Address is incorrect")
+            #print("Address is incorrect") # print to test function during development
             error=str(data['response']['errors'])
             self.status.set("Address is incorrect, Error: " + error)
 
-            print("Errors in address")
-            print(data['response']['errors'])
+            #print("Errors in address") # print to test function during development
+            #print(data['response']['errors'])# print to test function during development
 
-            print("Suggestion(s) to use instead:")
-            print(data['response']['suggestions'])
+            #print("Suggestion(s) to use instead:")
+            #print(data['response']['suggestions']) # this I want to Display on screen if possible
 
 
     def on_save(self):
@@ -524,7 +526,7 @@ class Application(tk.Tk):
         newfile = not os.path.exists(filename)
 
         data = self.recordform.get()
-        print(data)
+        #print(data) # print to test function during development
 
         with open(filename, 'a') as fh:
             csvwriter = csv.DictWriter(fh, fieldnames=data.keys())
