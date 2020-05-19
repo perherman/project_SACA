@@ -1,20 +1,27 @@
 ========================================================================================================================
-SACA - Simple Address Checking Application
+Final project Code in Place: SACA - Simple Address Checking Application
 ========================================================================================================================
 
 Description
 -----------
-
-A simple application to enable a CRM database user to check the validity of Swedish addresses.
-The validity is checked against the official address database (including zip codes) of Sweden which is publicized on a web site.
+For my final project in Code in Place I have chosen to solve a real world problem that I have when I
+manage a CRM-database. The problem is that people often give the wrong Zip code (called Postal Code in Sweden)
+Ultimately I want to integrate the solution in the CRM-system itself. But Milestone 1 is to have it running
+in a stand alone Windows Frame with the ability to enter an address, and check the validity of the entered combination
+of street with number and alpha code, postal code and locality (city, town, village).
+In this first versin it only checks Swedish addresses, but Milestone 2 is to enable it to check the validity
+of Danish, Norwegian and Finnish addresses as well.
+The validity is checked against the official address database of Sweden which is publicized on a web site.
+To access the web site and check validity of an address one needs an API-key.
 
 Features
 --------
 
 * Provides a validated entry form to ensure correct data
-* Ability to check and validate registered address against the official Swedish zip code register
+* Ability to check and validate registered address against the official Swedish postal code database
 * Stores corrected data to CSV files
 * Auto-fills form fields whenever possible
+* The application uses keyboard inputs. So using the mouse is not necessary.
 
 Authors
 =======

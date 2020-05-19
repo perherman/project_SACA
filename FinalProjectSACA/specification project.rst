@@ -4,14 +4,12 @@ SACA - Simple Address Checking Application
 
 Description
 -----------
-
 A simple application to enable a CRM database user to check the validity of Swedish addresses.
 The validity is checked against the official address database (including zip codes) of Sweden which
 is publicized on a web site via an API which requires an API-key.
 
 Functionality required
 ______________________
-
 The ability to check if a Swedish address has the following valid items:
 
 *   Valid postal code
@@ -30,7 +28,6 @@ Also a combination of several items in an address should be validated
 
 The program must:
 .................
-
 *   have inputs that:
 
     -   ignore meaningless keystrokes
@@ -78,7 +75,6 @@ Labels above fields (in order to make alignment of fields easier)
 
 Buttons
 -------
-
 *   A check button activates the command to check the address against www.geposit.se
 *   A save button activates the command to save the data of the address to a local address file
 *   A display button activates the command to display the data on screen (using Panda)
