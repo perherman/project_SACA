@@ -16,6 +16,8 @@ from decimal import Decimal, InvalidOperation
 import requests
 import api
 import pandas as pd
+import googletrans
+from googletrans import Translator
 
 api_key = ''
 
@@ -351,7 +353,7 @@ class DataRecordForm(tk.Frame):
 
         # Build the form
         # recordinfo section
-        recordinfo = tk.LabelFrame(self, text="Record Information")
+        recordinfo = tk.LabelFrame(self, text="Address Information")
 
         # line 1
         self.inputs['countrycode'] = LabelInput(
@@ -389,7 +391,6 @@ class DataRecordForm(tk.Frame):
         )
         self.inputs['locality'].grid(row=1, column=1)
 
-        #recordinfo.grid(row=0, column=0, sticky=(tk.W + tk.E))
         recordinfo.grid(row=1, column=0, sticky="we")
 
         # default the form
@@ -454,19 +455,19 @@ class Application(tk.Tk):
         self.record_correct.set('disabled') # parameter in order to check if record is correct before saving.
 
         self.recordform = DataRecordForm(self)
-        self.recordform.grid(row=1, padx=10)
+        self.recordform.grid(row=1, padx=20)
 
         self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
-        self.samplesbutton.grid(sticky="e",row=2, padx=10)
+        self.samplesbutton.grid(sticky="e",row=2, padx=10, pady=15)
 
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
-        self.checkbutton.grid(sticky="e",row=2, column= 2, padx=10)
+        self.checkbutton.grid(sticky="e",row=2, column= 2, padx=10, pady=5)
 
         button_state = self.record_correct.get()
         # print(button_state + 'after') #testing if the button_state has changed after check button
 
         self.savebutton = ttk.Button(self, text="Save", state = button_state, command=self.on_save)
-        self.savebutton.grid(sticky="e", row=2, column=3, padx=10)
+        self.savebutton.grid(sticky="e", row=2, column=3, padx=10, pady=5)
 
         # status bar
         self.status = tk.StringVar()
@@ -526,14 +527,14 @@ class Application(tk.Tk):
         data = response.json()
 
         if ((int)(data['response']['is_valid']) == 1):
-            print("Address is correct")
+            #print("Address is correct") # testing
             self.status.set("Address is correct")
             # print(data)
             self.savebutton['state'] = tk.NORMAL
         else:
-            print("Address is incorrect") # print to test function during development
+            #print("Address is incorrect") # print to test function during development
             self.savebutton['state'] = tk.DISABLED
-            # print(data)
+            # print(data) #testing
             error=str(data['response']['errors'])
             self.status.set("Address is incorrect, Error: " + error)
 
