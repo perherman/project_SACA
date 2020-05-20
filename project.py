@@ -11,8 +11,15 @@ import os
 import csv
 import tkinter as tk
 from tkinter import ttk
+from tkinter import scrolledtext
 from decimal import Decimal, InvalidOperation
 import requests
+import api
+import pandas as pd
+
+api_key = ''
+
+
 
 ##################
 # Widget Classes #
@@ -444,11 +451,14 @@ class Application(tk.Tk):
         self.recordform = DataRecordForm(self)
         self.recordform.grid(row=1, padx=10)
 
+        self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
+        self.samplesbutton.grid(sticky="e",row=2, padx=10)
+
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
-        self.checkbutton.grid(sticky="e",row=2, padx=10)
+        self.checkbutton.grid(sticky="e",row=2, column= 2, padx=10)
 
         self.savebutton = ttk.Button(self, text="Save", command=self.on_save)
-        self.savebutton.grid(sticky="e", row=2, column=2, padx=10)
+        self.savebutton.grid(sticky="e", row=2, column=3, padx=10)
 
         # status bar
         self.status = tk.StringVar()
@@ -458,6 +468,20 @@ class Application(tk.Tk):
 
         self.records_saved = 0
         self.records_checked = 0
+
+
+    def on_show_samples(self):
+        '''opens text widget to show samples of address to use for testing'''
+
+        window = tk.Tk()
+
+        window.geometry('400x400')
+        txt = scrolledtext.ScrolledText(window, width=100, height=100)
+        txt.grid(column=1, row=0)
+        sample_txt = pd.read_csv("sample_addresses.csv", delimiter=",", encoding="ISO-8859-1")
+
+        txt.insert('insert', sample_txt)
+
 
     def on_check(self):
         '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
@@ -475,8 +499,10 @@ class Application(tk.Tk):
 
         data = self.recordform.get()
         #print(data) # print to test function during development
+        #fetch api_key from file # Milestone 1b: hash the key
+        api_key = api.key
         # append format (json) and API-key to data in order to get the call to succeed.
-        data.update({'response_format': 'json' , 'api_key': '3bb5596dd455959defeb3cd2085c871e'})
+        data.update({'response_format': 'json' , 'api_key': api_key})
 
         #print(data) #test to see if it appends correctly
 

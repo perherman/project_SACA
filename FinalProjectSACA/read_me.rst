@@ -46,7 +46,7 @@ Requirements
 * pandas
 * a valid API-key from www.geposit.se  / if the one supplied here is no longer valid you can apply for a
     trial API at https://www.postnummerservice.se/utbud/valid-adressvalidering/bestall   klick on Demo and
-    enter your name, email and address.  #Milestone 1b: keep API-key in hashed text file
+    enter your name, email and address. The API-key is kept in a separate file.  #Milestone 1b: keep API-key in hashed text file
 
 Usage
 =====

@@ -78,13 +78,15 @@ Buttons
 *   A check button activates the command to check the address against www.geposit.se
 *   A save button activates the command to save the data of the address to a local address file
 *   A display button activates the command to display the data on screen (using Panda)
-*   The API-key which is necessary for authentification will be saved in a local text-file and read before calling the API at geposit.s
+*   The API-key which is necessary for authentification will be saved in a local text-file and read before calling the API at geposit.se
+    in coming version the API-key will be stored in a hashed file.
 
 Layout
 ------
-*   The goal is for the final layout to come as close as possible to the layout of the current Windows CRM-system (written in the low code tool Magic XPA)
+*   The layout should resemble the layout of the current Windows CRM-system
+    (written in the low code tool Magic XPA). In Milestone 1 the layout is acceptable, but not good
 
-    Final Layout: se attachment Layout SACA.jpg
+    Layout of current Windows CRM-system: se attachment Layout SACA.jpg
 
 
 
