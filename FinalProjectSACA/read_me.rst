@@ -9,9 +9,11 @@ manage a CRM-database. The problem is that people often give the wrong Zip code 
 Ultimately I want to integrate the solution in the CRM-system itself. But Milestone 1 is to have it running
 in a stand alone Windows Frame with the ability to enter an address, and check the validity of the entered combination
 of street with number and alpha code, postal code and locality (city, town, village).
-In this first versin it only checks Swedish addresses, but Milestone 2 is to enable it to check the validity
-of Danish, Norwegian and Finnish addresses as well.
-The validity is checked against the official address database of Sweden which is publicized on a web site.
+In this first version it only checks Swedish addresses, but Milestone 2 is to enable it to check the validity
+of Danish, Norwegian and Finnish addresses as well. If you enter a Norwegian, Danish or Finnish address where the  postal
+code is greater than 1000 it will however work.
+The validity is checked against the official address database of Sweden which is publicized on a web site (which also
+contains addresses in the other nordic countries.
 To access the web site and check validity of an address one needs an API-key.
 
 Features

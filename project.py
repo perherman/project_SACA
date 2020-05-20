@@ -448,16 +448,25 @@ class Application(tk.Tk):
 
         ttk.Label(self, text="SACA - Simple Address Checking Application", font=("TkDefaultFont", 16)).grid(row=0)
 
+        self.records_saved = 0
+        self.records_checked = 0
+        self.record_correct = 'normal'
+
         self.recordform = DataRecordForm(self)
         self.recordform.grid(row=1, padx=10)
 
         self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
         self.samplesbutton.grid(sticky="e",row=2, padx=10)
 
+        print(self.record_correct +'    1') # before check button
+
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
         self.checkbutton.grid(sticky="e",row=2, column= 2, padx=10)
 
-        self.savebutton = ttk.Button(self, text="Save", command=self.on_save)
+        button_state = self.record_correct
+        print(button_state + '            2') #testing if the button_state has changed after check button
+
+        self.savebutton = ttk.Button(self, text="Save", state = button_state, command=self.on_save)
         self.savebutton.grid(sticky="e", row=2, column=3, padx=10)
 
         # status bar
@@ -466,8 +475,9 @@ class Application(tk.Tk):
         #self.statusbar.grid(sticky=(tk.W + tk.E), row=3, padx=10)
         self.statusbar.grid(sticky="we", row=3, padx=10)
 
-        self.records_saved = 0
-        self.records_checked = 0
+        #self.records_saved = 0
+        #self.records_checked = 0
+        #self.record_correct = 'normal'
 
 
     def on_show_samples(self):
@@ -482,12 +492,9 @@ class Application(tk.Tk):
 
         txt.insert('insert', sample_txt)
 
-
     def on_check(self):
         '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
         string with API-key'''
-        #New function - Per-Olof Hermansson 2020
-
 
         errors = self.recordform.get_errors()
         if errors:
@@ -527,9 +534,14 @@ class Application(tk.Tk):
         if ((int)(data['response']['is_valid']) == 1):
             print("Address is correct")
             self.status.set("Address is correct")
+            self.record_correct = 'normal'
             # print(data)
+            print(self.record_correct + '      3') #check status of record_correct
         else:
             print("Address is incorrect") # print to test function during development
+            self.record_correct = 'disabled'
+            # print(data)
+            print(self.record_correct + '      4') #check status of record_correct
             error=str(data['response']['errors'])
             self.status.set("Address is incorrect, Error: " + error)
 
