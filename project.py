@@ -547,11 +547,13 @@ class Application(tk.Tk):
             #self.record_correct.set(value='normal')
             # print(data)
             #print(self.record_correct.get()) #check status of record_correct
-            switchButtonState()
+            #switchButtonState()
+            self.savebutton['state'] = tk.NORMAL
         else:
             print("Address is incorrect") # print to test function during development
             #self.record_correct.set(value='disabled')
-            switchButtonState()
+            #switchButtonState()
+            self.savebutton['state'] = tk.DISABLED
             # print(data)
             #print(self.record_correct.get()) #check status of record_correct
             error=str(data['response']['errors'])
