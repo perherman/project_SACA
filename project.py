@@ -504,6 +504,11 @@ class Application(tk.Tk):
         # append format (json) and API-key to data in order to get the call to succeed.
         data.update({'response_format': 'json' , 'api_key': api_key})
 
+        #add country code from form
+        c_code = data['countrycode']
+        c_code = c_code.lower()
+        #print(c_code) test lower
+
         #delete counctrycode element from data
         del data['countrycode']
 
@@ -512,8 +517,9 @@ class Application(tk.Tk):
         self.records_checked += 1
         self.status.set(
             "{} records checked this session".format(self.records_checked))
+        #add country code to URL
         #use data from record to check address with geposit.se
-        response = requests.post('https://valid.geposit.se/1.7/validate/address/se', data=data)
+        response = requests.post('https://valid.geposit.se/1.7/validate/address/'+c_code, data=data)
         response.raise_for_status()
         #receive data back from geposit.se and assign it to data
         data = response.json()
