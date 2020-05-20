@@ -354,20 +354,20 @@ class DataRecordForm(tk.Frame):
         recordinfo = tk.LabelFrame(self, text="Record Information")
 
         # line 1
-       # self.inputs['Country Code'] = LabelInput(
-       #     recordinfo, "Country Code",
-       #     input_class=ValidatedCombobox,
-       #     input_var=tk.StringVar(),
-       #     input_args = {"values": ["SE", "NO", "DK", "FI"]}
-       # )
-       # self.inputs['Country Code'].grid(row=0, column=0)
+        self.inputs['countrycode'] = LabelInput(
+            recordinfo, "Country Code",
+            input_class=ValidatedCombobox,
+            input_var=tk.StringVar(),
+            input_args = {"values": ["SE", "NO", "DK", "FI"]}
+       )
+        self.inputs['countrycode'].grid(row=0, column=0)
 
         self.inputs['street'] = LabelInput(
             recordinfo, "Postal Address",
             input_class=RequiredEntry,
             input_var=tk.StringVar()
         )
-        self.inputs['street'].grid(row=0, column=0,sticky="we")
+        self.inputs['street'].grid(row=0, column=1,sticky="we")
 
         # line 2
         self.inputs['postalcode'] = LabelInput(
@@ -411,17 +411,17 @@ class DataRecordForm(tk.Frame):
         """Resets the form entries"""
 
         # gather the default entered value
-        #c_code = self.inputs['Country Code'].get()
+        c_code = self.inputs['countrycode'].get()
 
         # clear all values
         for widget in self.inputs.values():
             widget.set('')
 
-        #self.inputs['Country Code'].input.focus()
+        self.inputs['countrycode'].input.focus()
 
-        #if c_code not in ('',):
-        #    self.inputs['Country Code'].set(c_code)
-        #    self.inputs['Postal Address'].input.focus()
+        if c_code not in ('',):
+            self.inputs['countrycode'].set(c_code)
+            self.inputs['street'].input.focus()
 
 
     def get_errors(self):
@@ -498,13 +498,16 @@ class Application(tk.Tk):
             return False
 
         data = self.recordform.get()
-        #print(data) # print to test function during development
+        print(data) # print to test function during development
         #fetch api_key from file # Milestone 1b: hash the key
         api_key = api.key
         # append format (json) and API-key to data in order to get the call to succeed.
         data.update({'response_format': 'json' , 'api_key': api_key})
 
-        #print(data) #test to see if it appends correctly
+        #delete counctrycode element from data
+        del data['countrycode']
+
+        print(data) #test to see if it appends correctly
 
         self.records_checked += 1
         self.status.set(
@@ -520,15 +523,15 @@ class Application(tk.Tk):
             self.status.set("Address is correct")
             # print(data)
         else:
-            #print("Address is incorrect") # print to test function during development
+            print("Address is incorrect") # print to test function during development
             error=str(data['response']['errors'])
             self.status.set("Address is incorrect, Error: " + error)
 
-            #print("Errors in address") # print to test function during development
-            #print(data['response']['errors'])# print to test function during development
+            print("Errors in address") # print to test function during development
+            #rint(data['response']['errors'])# print to test function during development
 
-            #print("Suggestion(s) to use instead:")
-            #print(data['response']['suggestions']) # this I want to Display on screen if possible
+            print("Suggestion(s) to use instead:")
+            print(data['response']['suggestions']) # this I want to Display on screen if possible
 
 
     def on_save(self):
