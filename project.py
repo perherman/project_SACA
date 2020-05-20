@@ -450,7 +450,8 @@ class Application(tk.Tk):
 
         self.records_saved = 0
         self.records_checked = 0
-        self.record_correct = 'normal'
+        self.record_correct = tk.StringVar()
+        self.record_correct.set('disabled') #Tried to create a parameter in order to check if record is correct before saving.
 
         self.recordform = DataRecordForm(self)
         self.recordform.grid(row=1, padx=10)
@@ -458,13 +459,13 @@ class Application(tk.Tk):
         self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
         self.samplesbutton.grid(sticky="e",row=2, padx=10)
 
-        print(self.record_correct +'    1') # before check button
+        #print(self.record_correct.get()) # test before check button
 
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
         self.checkbutton.grid(sticky="e",row=2, column= 2, padx=10)
 
-        button_state = self.record_correct
-        print(button_state + '            2') #testing if the button_state has changed after check button
+        button_state = self.record_correct.get()
+        # print(button_state + 'after') #testing if the button_state has changed after check button
 
         self.savebutton = ttk.Button(self, text="Save", state = button_state, command=self.on_save)
         self.savebutton.grid(sticky="e", row=2, column=3, padx=10)
@@ -472,7 +473,6 @@ class Application(tk.Tk):
         # status bar
         self.status = tk.StringVar()
         self.statusbar = ttk.Label(self, textvariable=self.status)
-        #self.statusbar.grid(sticky=(tk.W + tk.E), row=3, padx=10)
         self.statusbar.grid(sticky="we", row=3, padx=10)
 
         #self.records_saved = 0
@@ -496,6 +496,16 @@ class Application(tk.Tk):
         '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
         string with API-key'''
 
+        def switchButtonState():
+            if (self.savebutton['state'] == tk.DISABLED):
+                self.savebutton['state'] = tk.NORMAL
+                print("test!!")
+                print(self.savebutton['state'])
+            else:
+                self.savebutton['state'] = tk.DISABLED
+                print("else")
+                print(self.savebutton['state'])
+
         errors = self.recordform.get_errors()
         if errors:
             self.status.set(
@@ -505,7 +515,7 @@ class Application(tk.Tk):
             return False
 
         data = self.recordform.get()
-        print(data) # print to test function during development
+        #print(data) # print to test function during development
         #fetch api_key from file # Milestone 1b: hash the key
         api_key = api.key
         # append format (json) and API-key to data in order to get the call to succeed.
@@ -519,7 +529,7 @@ class Application(tk.Tk):
         #delete counctrycode element from data
         del data['countrycode']
 
-        print(data) #test to see if it appends correctly
+        #print(data) #test to see if it appends correctly
 
         self.records_checked += 1
         self.status.set(
@@ -534,22 +544,26 @@ class Application(tk.Tk):
         if ((int)(data['response']['is_valid']) == 1):
             print("Address is correct")
             self.status.set("Address is correct")
-            self.record_correct = 'normal'
+            #self.record_correct.set(value='normal')
             # print(data)
-            print(self.record_correct + '      3') #check status of record_correct
+            #print(self.record_correct.get()) #check status of record_correct
+            switchButtonState()
         else:
             print("Address is incorrect") # print to test function during development
-            self.record_correct = 'disabled'
+            #self.record_correct.set(value='disabled')
+            switchButtonState()
             # print(data)
-            print(self.record_correct + '      4') #check status of record_correct
+            #print(self.record_correct.get()) #check status of record_correct
             error=str(data['response']['errors'])
             self.status.set("Address is incorrect, Error: " + error)
 
-            print("Errors in address") # print to test function during development
-            #rint(data['response']['errors'])# print to test function during development
+        #return self.record_correct
 
-            print("Suggestion(s) to use instead:")
-            print(data['response']['suggestions']) # this I want to Display on screen if possible
+            #print("Errors in address") # print to test function during development
+            #print(data['response']['errors'])# print to test function during development
+
+            #print("Suggestion(s) to use instead:")
+            #print(data['response']['suggestions']) # this I want to Display on screen if possible
 
 
     def on_save(self):
