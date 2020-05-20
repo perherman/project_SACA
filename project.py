@@ -475,7 +475,7 @@ class Application(tk.Tk):
 
         window = tk.Tk()
 
-        window.geometry('400x400')
+        window.geometry('400x400+805+50')
         txt = scrolledtext.ScrolledText(window, width=100, height=100)
         txt.grid(column=1, row=0)
         sample_txt = pd.read_csv("sample_addresses.csv", delimiter=",", encoding="ISO-8859-1")
