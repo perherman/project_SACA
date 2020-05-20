@@ -451,15 +451,13 @@ class Application(tk.Tk):
         self.records_saved = 0
         self.records_checked = 0
         self.record_correct = tk.StringVar()
-        self.record_correct.set('disabled') #Tried to create a parameter in order to check if record is correct before saving.
+        self.record_correct.set('disabled') # parameter in order to check if record is correct before saving.
 
         self.recordform = DataRecordForm(self)
         self.recordform.grid(row=1, padx=10)
 
         self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
         self.samplesbutton.grid(sticky="e",row=2, padx=10)
-
-        #print(self.record_correct.get()) # test before check button
 
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
         self.checkbutton.grid(sticky="e",row=2, column= 2, padx=10)
@@ -474,10 +472,6 @@ class Application(tk.Tk):
         self.status = tk.StringVar()
         self.statusbar = ttk.Label(self, textvariable=self.status)
         self.statusbar.grid(sticky="we", row=3, padx=10)
-
-        #self.records_saved = 0
-        #self.records_checked = 0
-        #self.record_correct = 'normal'
 
 
     def on_show_samples(self):
@@ -495,16 +489,6 @@ class Application(tk.Tk):
     def on_check(self):
         '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
         string with API-key'''
-
-        def switchButtonState():
-            if (self.savebutton['state'] == tk.DISABLED):
-                self.savebutton['state'] = tk.NORMAL
-                print("test!!")
-                print(self.savebutton['state'])
-            else:
-                self.savebutton['state'] = tk.DISABLED
-                print("else")
-                print(self.savebutton['state'])
 
         errors = self.recordform.get_errors()
         if errors:
@@ -544,22 +528,16 @@ class Application(tk.Tk):
         if ((int)(data['response']['is_valid']) == 1):
             print("Address is correct")
             self.status.set("Address is correct")
-            #self.record_correct.set(value='normal')
             # print(data)
-            #print(self.record_correct.get()) #check status of record_correct
-            #switchButtonState()
             self.savebutton['state'] = tk.NORMAL
         else:
             print("Address is incorrect") # print to test function during development
-            #self.record_correct.set(value='disabled')
-            #switchButtonState()
             self.savebutton['state'] = tk.DISABLED
             # print(data)
-            #print(self.record_correct.get()) #check status of record_correct
             error=str(data['response']['errors'])
             self.status.set("Address is incorrect, Error: " + error)
 
-        #return self.record_correct
+
 
             #print("Errors in address") # print to test function during development
             #print(data['response']['errors'])# print to test function during development
