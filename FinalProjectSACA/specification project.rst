@@ -15,15 +15,12 @@ The ability to check if a Swedish address has the following valid items:
 *   Valid postal code
 *   Valid locality (town, city, village etc)
 *   Valid street address including number & alpha code/stairwell/apartment
-
-Also a combination of several items in an address should be validated
-
+*   A combination of all items in an address should be validated in order to be able to save the address.
 *   Valid street address including number, in combination with zip code and locality
 *   Valid Box number, in combination with zip code and locality
 *   In the first version it will only respond with either "The address is correct", or the address in incorrect, and if
     incorrect it will give the error code and errormessage indicating which element of the address is incorrect.
-
-*   A correct address should be possible to save in a local CSV-file.
+*   A correct address can saved to a local CSV-file. If the address is incorrect it should not be possible to save the adress
 *   The CSV-file should be able to be viewed by the user.
 
 The program must:
@@ -34,7 +31,9 @@ The program must:
     -   require a value for all fields
     -   get marked with an error if the value is invalid on focusout
 
-*   prevent checking the address or saving record when errors are present
+*   prevent saving record when errors are present
+*   prevent checking the record if any field is blank or has invalid characters
+*   It should be possible to use the application without the use of mouse, i.e. just using keyboard inputs.
 
 Functionality not required in version 1
 _______________________________________
@@ -45,17 +44,16 @@ In this first version the following functions are not required, but will be rele
 *   Auto update of Zip Code from the entered street name and locality
 *   Auto suggestion & completion of street name at time of entry in the SACA Windows Application in a scroll list
     with the ability to choose which address, and get the correct zip code and locality updated in respective field.
-*   Ability to test Norwegian, Danish or Finnish addresses.
+*   Ability to fully test Norwegian, Danish or Finnish addresses with postal codes starting with 0.
 *   The functionality above working directly with the Oracle Database, while accessing one address at a time
     for example:
     -	Auto update of correct zip code from a current street name & number + locality (or Box address) in the Oracle database
 
-
 Limitations
 ___________
 This first version runs in a stand alone Windows window, and cannot update the valid values directly in to the CRM database.
-The first version will not have separate fields for the address, number or alpha code/no of stairs/apartment, rather they will be in a field for the full combination.
-The application should be able to run without the use of mouse, i.e. just using keyboard inputs.
+The first version will not have separate fields for the address, number or alpha code/no of stairs/apartment, rather
+they will be in a field for the full combination.
 
 Data Dictionary
 _______________
@@ -75,10 +73,11 @@ Labels above fields (in order to make alignment of fields easier)
 
 Buttons
 -------
-*   A check button activates the command to check the address against www.geposit.se
+*   A check button activates the command to check the address against www.geposit.se authenticating with an API-key
 *   A save button activates the command to save the data of the address to a local address file
-*   A display button activates the command to display the data on screen (using Panda)
-*   The API-key which is necessary for authentification will be saved in a local text-file and read before calling the API at geposit.se
+*   A display button displays saved data to a separate window on screen
+*   A display button displays Samples of Swedish addresses to a separate window on screen
+*   The API-key which is necessary for authentification is contained in a local text-file and read before calling the API at geposit.se
     in coming version the API-key will be stored in a hashed file.
 
 Layout
