@@ -11,8 +11,15 @@ import os
 import csv
 import tkinter as tk
 from tkinter import ttk
+from tkinter import scrolledtext
 from decimal import Decimal, InvalidOperation
 import requests
+import api
+import pandas as pd
+import googletrans
+from googletrans import Translator
+
+api_key = ''
 
 ##################
 # Widget Classes #
@@ -344,23 +351,23 @@ class DataRecordForm(tk.Frame):
 
         # Build the form
         # recordinfo section
-        recordinfo = tk.LabelFrame(self, text="Record Information")
+        recordinfo = tk.LabelFrame(self, text="Address Information")
 
         # line 1
-       # self.inputs['Country Code'] = LabelInput(
-       #     recordinfo, "Country Code",
-       #     input_class=ValidatedCombobox,
-       #     input_var=tk.StringVar(),
-       #     input_args = {"values": ["SE", "NO", "DK", "FI"]}
-       # )
-       # self.inputs['Country Code'].grid(row=0, column=0)
+        self.inputs['countrycode'] = LabelInput(
+            recordinfo, "Country Code",
+            input_class=ValidatedCombobox,
+            input_var=tk.StringVar(),
+            input_args = {"values": ["SE", "NO", "DK", "FI"]}
+       )
+        self.inputs['countrycode'].grid(row=0, column=0)
 
         self.inputs['street'] = LabelInput(
             recordinfo, "Postal Address",
             input_class=RequiredEntry,
             input_var=tk.StringVar()
         )
-        self.inputs['street'].grid(row=0, column=0,sticky="we")
+        self.inputs['street'].grid(row=0, column=1,sticky="we")
 
         # line 2
         self.inputs['postalcode'] = LabelInput(
@@ -382,12 +389,10 @@ class DataRecordForm(tk.Frame):
         )
         self.inputs['locality'].grid(row=1, column=1)
 
-        #recordinfo.grid(row=0, column=0, sticky=(tk.W + tk.E))
         recordinfo.grid(row=1, column=0, sticky="we")
 
         # default the form
         self.reset()
-
 
     def get(self):
         """Retrieve data from form as a dict"""
@@ -404,18 +409,17 @@ class DataRecordForm(tk.Frame):
         """Resets the form entries"""
 
         # gather the default entered value
-        #c_code = self.inputs['Country Code'].get()
+        c_code = self.inputs['countrycode'].get()
 
         # clear all values
         for widget in self.inputs.values():
             widget.set('')
 
-        #self.inputs['Country Code'].input.focus()
+        self.inputs['countrycode'].input.focus()
 
-        #if c_code not in ('',):
-        #    self.inputs['Country Code'].set(c_code)
-        #    self.inputs['Postal Address'].input.focus()
-
+        if c_code not in ('',):
+            self.inputs['countrycode'].set(c_code)
+            self.inputs['street'].input.focus()
 
     def get_errors(self):
         """Get a list of field errors in the form"""
@@ -441,29 +445,39 @@ class Application(tk.Tk):
 
         ttk.Label(self, text="SACA - Simple Address Checking Application", font=("TkDefaultFont", 16)).grid(row=0)
 
+        self.records_saved = 0
+        self.records_checked = 0
+        self.record_correct = tk.StringVar()
+        self.record_correct.set('disabled') # parameter in order to check if record is correct before saving.
+
         self.recordform = DataRecordForm(self)
-        self.recordform.grid(row=1, padx=10)
+        self.recordform.grid(row=1, padx=20)
 
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
-        self.checkbutton.grid(sticky="e",row=2, padx=10)
+        self.checkbutton.grid(sticky="e",row=2, column=0, padx=10, pady=5)
 
-        self.savebutton = ttk.Button(self, text="Save", command=self.on_save)
-        self.savebutton.grid(sticky="e", row=2, column=2, padx=10)
+        button_state = self.record_correct.get()
+        # print(button_state + 'after') #testing if the button_state has changed after check button
+
+        self.savebutton = ttk.Button(self, text="Save", state = button_state, command=self.on_save)
+        self.savebutton.grid(sticky="e", row=2, column=1, padx=10, pady=5)
+
+        self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
+        self.samplesbutton.grid(sticky="e",row=2, column=2, padx=10, pady=15)
+
+        self.savedbutton =ttk.Button(self, text="Show Saved", command=self.on_show_saved)
+        self.savedbutton.grid(sticky="e",row=2, column=3, padx=10, pady=15)
+
 
         # status bar
         self.status = tk.StringVar()
         self.statusbar = ttk.Label(self, textvariable=self.status)
-        #self.statusbar.grid(sticky=(tk.W + tk.E), row=3, padx=10)
-        self.statusbar.grid(sticky="we", row=3, padx=10)
+        self.statusbar.grid(sticky="w", row=3, padx=10)
 
-        self.records_saved = 0
-        self.records_checked = 0
 
     def on_check(self):
         '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
         string with API-key'''
-        #New function - Per-Olof Hermansson 2020
-
 
         errors = self.recordform.get_errors()
         if errors:
@@ -475,34 +489,49 @@ class Application(tk.Tk):
 
         data = self.recordform.get()
         #print(data) # print to test function during development
+        #fetch api_key from file # Milestone 1b: hash the key
+        api_key = api.key
         # append format (json) and API-key to data in order to get the call to succeed.
-        data.update({'response_format': 'json' , 'api_key': '3bb5596dd455959defeb3cd2085c871e'})
+        data.update({'response_format': 'json' , 'api_key': api_key})
+
+        #add country code from form in order to put it at the end of the URL in request.post()
+        c_code = data['countrycode']
+        c_code = c_code.lower()
+        #print(c_code) test lower
+
+        #delete counctrycode element from data
+        del data['countrycode']
 
         #print(data) #test to see if it appends correctly
 
         self.records_checked += 1
-        self.status.set(
-            "{} records checked this session".format(self.records_checked))
+
+        #add country code to URL
         #use data from record to check address with geposit.se
-        response = requests.post('https://valid.geposit.se/1.7/validate/address/se', data=data)
+        response = requests.post('https://valid.geposit.se/1.7/validate/address/'+c_code, data=data)
         response.raise_for_status()
         #receive data back from geposit.se and assign it to data
         data = response.json()
 
         if ((int)(data['response']['is_valid']) == 1):
-            print("Address is correct")
-            self.status.set("Address is correct")
-            # print(data)
+            #print("Address is correct") # testing
+            self.status.set("Address is correct.     {} records checked this session".format(self.records_checked))
+            # print(data) testing
+            self.savebutton['state'] = tk.NORMAL
         else:
             #print("Address is incorrect") # print to test function during development
+            self.savebutton['state'] = tk.DISABLED
+            # print(data) #testing
             error=str(data['response']['errors'])
-            self.status.set("Address is incorrect, Error: " + error)
+            translator = Translator()
+            translated = translator.translate(text=error, src='sv')
+            self.status.set("Address is incorrect, Error: " + translated.text + "\n" + "{} records checked this session".format(self.records_checked))
 
             #print("Errors in address") # print to test function during development
             #print(data['response']['errors'])# print to test function during development
 
             #print("Suggestion(s) to use instead:")
-            #print(data['response']['suggestions']) # this I want to Display on screen if possible
+            #print(data['response']['suggestions']) # this I want to Display on separate window if possible
 
 
     def on_save(self):
@@ -518,7 +547,7 @@ class Application(tk.Tk):
             )
             return False
 
-        # For now, we save to a hardcoded filename with a datestring.
+        # save to a hardcoded filename with a datestring.
         # If it doesnt' exist, create it,
         # otherwise just append to the existing file
         datestring = datetime.today().strftime("%Y-%m-%d")
@@ -538,6 +567,36 @@ class Application(tk.Tk):
         self.status.set(
             "{} records saved this session".format(self.records_saved))
         self.recordform.reset()
+        self.savebutton['state'] = tk.DISABLED
+
+
+    def on_show_saved(self):
+        '''opens text widget to show saved correct address'''
+
+        window = tk.Tk()
+        window.title("Saved correct addresses")
+        window.geometry('500x400+805+50')
+        txt = scrolledtext.ScrolledText(window, width=100, height=100)
+        txt.grid(column=1, row=0)
+        datestring = datetime.today().strftime("%Y-%m-%d")
+        filename = "addresses_{}.csv".format(datestring)
+        saved_txt = pd.read_csv(filename, delimiter=",", encoding="ISO-8859-1")
+
+        txt.insert('insert', saved_txt)
+
+
+    def on_show_samples(self):
+        '''opens text widget to show samples of address to use for testing'''
+
+        window = tk.Tk()
+        window.title("A sample of Swedish addresses (correct and incorrect)")
+        window.geometry('500x400+300+350')
+        txt = scrolledtext.ScrolledText(window, width=100, height=100)
+        txt.grid(column=1, row=0)
+        sample_txt = pd.read_csv("sample_addresses.csv", delimiter=",", encoding="ISO-8859-1")
+
+        txt.insert('insert', sample_txt)
+
 
 
 if __name__ == "__main__":
