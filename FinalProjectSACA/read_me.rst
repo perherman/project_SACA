@@ -6,24 +6,31 @@ Description
 -----------
 For my final project in Code in Place I have chosen to solve a real world problem that I have when I
 manage a CRM-database. The problem is that people often give the wrong Zip code (called Postal Code in Sweden)
-Ultimately I want to integrate the solution in the CRM-system itself. But Milestone 1 is to have it running
+Ultimately I want to integrate the solution in the CRM-system itself (Milestone 3). But Milestone 1 is to have it running
 in a stand alone Windows Frame with the ability to enter an address, and check the validity of the entered combination
 of street with number and alpha code, postal code and locality (city, town, village).
-In this first version it only checks Swedish addresses, but Milestone 2 is to enable it to check the validity
-of Danish, Norwegian and Finnish addresses as well. If you enter a Norwegian, Danish or Finnish address where the  postal
-code is greater than 1000 it will however work.
+
 The validity is checked against the official address database of Sweden which is publicized on a web site (which also
-contains addresses in the other nordic countries.
+contains addresses in the other nordic countries).
 To access the web site and check validity of an address one needs an API-key.
+
+In this first version it only checks Swedish addresses, but Milestone 2 is to enable it to check the validity
+of Danish, Norwegian and Finnish addresses as well. However, if you enter a Norwegian, Danish or Finnish address
+where the  postal code is greater than 1000 it will work. I supply a CSV-file with a number of Swedish addresses that
+you can use while trying the application. Some of them are correct, and some of the are incorrect.
+After entering a correct address, you can save it to a CSV-file. After an incorrect address the Save button is disabled.
+If you enter an incorrect address you will get an error message with the cause of the error, originally in Swedish.
+The translation of the error messages are done with Googletrans, and it does not always make a perfect translation.
 
 Features
 --------
 * Provides a validated entry form to ensure correct data
 * Ability to check and validate registered address against the official Swedish zip code register
-* Stores corrected data to CSV files # Milestone 1b: only correct addresses can be stored
+* Stores corrected data to CSV files
 * Auto-fills form fields whenever possible
+* Ability to view samples of Swedish addresses for trial purposes
 * Ability to view saved correct addresses from the CSV-file # Milestone 1b
-* The application uses keyboard inputs. So using the mouse is not necessary.
+* The application uses keyboard inputs. So using the mouse is not necessary
 
 Authors
 -------
@@ -62,4 +69,4 @@ General Notes
 The CSV file will be saved to your current directory in the format "addresses_CURRENTDATE.csv", where CURRENTDATE is today's date in ISO format.
 
 This program only appends to the CSV file.  You should have a spreadsheet program installed in case you need to edit the file.
-Milestoned 1B: The file can be displayed on screen if you press the Display button.
+

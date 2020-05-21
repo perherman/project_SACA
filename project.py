@@ -394,7 +394,6 @@ class DataRecordForm(tk.Frame):
         # default the form
         self.reset()
 
-
     def get(self):
         """Retrieve data from form as a dict"""
 
@@ -421,7 +420,6 @@ class DataRecordForm(tk.Frame):
         if c_code not in ('',):
             self.inputs['countrycode'].set(c_code)
             self.inputs['street'].input.focus()
-
 
     def get_errors(self):
         """Get a list of field errors in the form"""
@@ -455,36 +453,27 @@ class Application(tk.Tk):
         self.recordform = DataRecordForm(self)
         self.recordform.grid(row=1, padx=20)
 
-        self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
-        self.samplesbutton.grid(sticky="e",row=2, padx=10, pady=15)
-
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
-        self.checkbutton.grid(sticky="e",row=2, column= 2, padx=10, pady=5)
+        self.checkbutton.grid(sticky="e",row=2, column=0, padx=10, pady=5)
 
         button_state = self.record_correct.get()
         # print(button_state + 'after') #testing if the button_state has changed after check button
 
         self.savebutton = ttk.Button(self, text="Save", state = button_state, command=self.on_save)
-        self.savebutton.grid(sticky="e", row=2, column=3, padx=10, pady=5)
+        self.savebutton.grid(sticky="e", row=2, column=1, padx=10, pady=5)
+
+        self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
+        self.samplesbutton.grid(sticky="e",row=2, column=2, padx=10, pady=15)
+
+        self.savedbutton =ttk.Button(self, text="Show Saved", command=self.on_show_saved)
+        self.savedbutton.grid(sticky="e",row=2, column=3, padx=10, pady=15)
+
 
         # status bar
         self.status = tk.StringVar()
         self.statusbar = ttk.Label(self, textvariable=self.status)
         self.statusbar.grid(sticky="w", row=3, padx=10)
 
-
-
-    def on_show_samples(self):
-        '''opens text widget to show samples of address to use for testing'''
-
-        window = tk.Tk()
-
-        window.geometry('400x400+805+50')
-        txt = scrolledtext.ScrolledText(window, width=100, height=100)
-        txt.grid(column=1, row=0)
-        sample_txt = pd.read_csv("sample_addresses.csv", delimiter=",", encoding="ISO-8859-1")
-
-        txt.insert('insert', sample_txt)
 
     def on_check(self):
         '''Checks if errors in fields, takes data and appends definition of format string=json, and appends
@@ -527,7 +516,7 @@ class Application(tk.Tk):
         if ((int)(data['response']['is_valid']) == 1):
             #print("Address is correct") # testing
             self.status.set("Address is correct.     {} records checked this session".format(self.records_checked))
-            # print(data)
+            # print(data) testing
             self.savebutton['state'] = tk.NORMAL
         else:
             #print("Address is incorrect") # print to test function during development
@@ -538,13 +527,11 @@ class Application(tk.Tk):
             translated = translator.translate(text=error, src='sv')
             self.status.set("Address is incorrect, Error: " + translated.text + "\n" + "{} records checked this session".format(self.records_checked))
 
-
-
             #print("Errors in address") # print to test function during development
             #print(data['response']['errors'])# print to test function during development
 
             #print("Suggestion(s) to use instead:")
-            #print(data['response']['suggestions']) # this I want to Display on screen if possible
+            print(data['response']['suggestions']) # this I want to Display on separate window if possible
 
 
     def on_save(self):
@@ -560,7 +547,7 @@ class Application(tk.Tk):
             )
             return False
 
-        # For now, we save to a hardcoded filename with a datestring.
+        # save to a hardcoded filename with a datestring.
         # If it doesnt' exist, create it,
         # otherwise just append to the existing file
         datestring = datetime.today().strftime("%Y-%m-%d")
@@ -580,6 +567,36 @@ class Application(tk.Tk):
         self.status.set(
             "{} records saved this session".format(self.records_saved))
         self.recordform.reset()
+        self.savebutton['state'] = tk.DISABLED
+
+
+    def on_show_saved(self):
+        '''opens text widget to show saved correct address'''
+
+        window = tk.Tk()
+        window.title("Saved correct addresses")
+        window.geometry('500x400+805+50')
+        txt = scrolledtext.ScrolledText(window, width=100, height=100)
+        txt.grid(column=1, row=0)
+        datestring = datetime.today().strftime("%Y-%m-%d")
+        filename = "addresses_{}.csv".format(datestring)
+        saved_txt = pd.read_csv(filename, delimiter=",", encoding="ISO-8859-1")
+
+        txt.insert('insert', saved_txt)
+
+
+    def on_show_samples(self):
+        '''opens text widget to show samples of address to use for testing'''
+
+        window = tk.Tk()
+        window.title("A sample of Swedish addresses (correct and incorrect)")
+        window.geometry('500x400+805+50')
+        txt = scrolledtext.ScrolledText(window, width=100, height=100)
+        txt.grid(column=1, row=0)
+        sample_txt = pd.read_csv("sample_addresses.csv", delimiter=",", encoding="ISO-8859-1")
+
+        txt.insert('insert', sample_txt)
+
 
 
 if __name__ == "__main__":
