@@ -531,7 +531,7 @@ class Application(tk.Tk):
             #print(data['response']['errors'])# print to test function during development
 
             #print("Suggestion(s) to use instead:")
-            print(data['response']['suggestions']) # this I want to Display on separate window if possible
+            #print(data['response']['suggestions']) # this I want to Display on separate window if possible
 
 
     def on_save(self):
@@ -590,7 +590,7 @@ class Application(tk.Tk):
 
         window = tk.Tk()
         window.title("A sample of Swedish addresses (correct and incorrect)")
-        window.geometry('500x400+805+50')
+        window.geometry('500x400+300+350')
         txt = scrolledtext.ScrolledText(window, width=100, height=100)
         txt.grid(column=1, row=0)
         sample_txt = pd.read_csv("sample_addresses.csv", delimiter=",", encoding="ISO-8859-1")
