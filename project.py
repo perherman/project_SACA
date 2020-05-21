@@ -21,8 +21,6 @@ from googletrans import Translator
 
 api_key = ''
 
-
-
 ##################
 # Widget Classes #
 ##################
@@ -472,7 +470,8 @@ class Application(tk.Tk):
         # status bar
         self.status = tk.StringVar()
         self.statusbar = ttk.Label(self, textvariable=self.status)
-        self.statusbar.grid(sticky="we", row=3, padx=10)
+        self.statusbar.grid(sticky="w", row=3, padx=10)
+
 
 
     def on_show_samples(self):
@@ -506,7 +505,7 @@ class Application(tk.Tk):
         # append format (json) and API-key to data in order to get the call to succeed.
         data.update({'response_format': 'json' , 'api_key': api_key})
 
-        #add country code from form
+        #add country code from form in order to put it at the end of the URL in request.post()
         c_code = data['countrycode']
         c_code = c_code.lower()
         #print(c_code) test lower
@@ -517,8 +516,7 @@ class Application(tk.Tk):
         #print(data) #test to see if it appends correctly
 
         self.records_checked += 1
-        self.status.set(
-            "{} records checked this session".format(self.records_checked))
+
         #add country code to URL
         #use data from record to check address with geposit.se
         response = requests.post('https://valid.geposit.se/1.7/validate/address/'+c_code, data=data)
@@ -528,7 +526,7 @@ class Application(tk.Tk):
 
         if ((int)(data['response']['is_valid']) == 1):
             #print("Address is correct") # testing
-            self.status.set("Address is correct")
+            self.status.set("Address is correct.     {} records checked this session".format(self.records_checked))
             # print(data)
             self.savebutton['state'] = tk.NORMAL
         else:
@@ -536,7 +534,9 @@ class Application(tk.Tk):
             self.savebutton['state'] = tk.DISABLED
             # print(data) #testing
             error=str(data['response']['errors'])
-            self.status.set("Address is incorrect, Error: " + error)
+            translator = Translator()
+            translated = translator.translate(text=error, src='sv')
+            self.status.set("Address is incorrect, Error: " + translated.text + "\n" + "{} records checked this session".format(self.records_checked))
 
 
 
