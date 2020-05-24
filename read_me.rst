@@ -24,14 +24,17 @@ The translation of the error messages are done with Googletrans, and it does not
 
 Features
 --------
-* If address entered is incorrect a messagewindow suggest the correct address* Provides a validated entry form to ensure correct data
-* Ability to check and validate registered address against the official Swedish zip code register
+*   Ability to check and validate registered address against the official Swedish zip code register
+*   If address entered is incorrect it gives an error message with info of what is wrong, and also a messagewindow suggesting
+        the correct address
+*   Translates error codes from Swedish to English using Googletrans
+*   Provides a validated entry form to ensure correct data
+*   Stores corrected data to CSV files
+*   Ability to view a sample of Swedish addresses, both correct and incorrect, for foreign users so that they can test the application
+*   Auto-fills form fields whenever possible, in this version the Country code.
+*   Ability to view saved correct addresses from the CSV-file
+*   The application uses keyboard inputs. So using the mouse is not necessary
 
-* Stores corrected data to CSV files
-* View a sample of Swedish addresses, both correct and incorrect, for foreign users so that they can test the application
-* Auto-fills form fields whenever possible, in this version the Country code.
-* Ability to view saved correct addresses from the CSV-file
-* The application uses keyboard inputs. So using the mouse is not necessary
 
 Authors
 -------
