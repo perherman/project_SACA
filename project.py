@@ -11,6 +11,7 @@ import os
 import csv
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter import scrolledtext
 from decimal import Decimal, InvalidOperation
 import requests
@@ -20,6 +21,14 @@ import googletrans
 from googletrans import Translator
 
 api_key = ''
+
+'''
+FAIR USE DISCLAIMEr
+Since I am new to programming and only learnt basic Python I have taken the basic code for handling fields
+and labels (the classes) from the book: Chapter 1-4 from Python GUI Programming with Tkinter, by Alan D. Moore, 2018 (Packt Publishing)
+The DataRecordForm class and Application class have been totally re-written and adapted in order to fit the requirements of
+the Simple address checking application.
+'''
 
 ##################
 # Widget Classes #
@@ -529,6 +538,21 @@ class Application(tk.Tk):
 
             #print("Errors in address") # print to test function during development
             #print(data['response']['errors'])# print to test function during development
+
+            suggestions = data['response']['suggestions']
+            suggest = suggestions[0] # take out dictionary from list
+            # print(suggestions) # testing
+            #print(suggest) #testing
+            street = suggest.get('street') + ' ' + suggest.get('street_number') + '' + suggest.get(
+                'extra_number') + '' + suggest.get('letter')
+            postalcode = suggest.get('postalcode')
+            locality = suggest.get('locality')
+            suggested_address = street + ' ' + postalcode + ' ' + locality
+            #print(street) #testing
+            #print(postalcode) # testing
+            #print(locality) # testing
+
+            messagebox.showinfo("Try the following address:", suggested_address)
 
             #print("Suggestion(s) to use instead:")
             #print(data['response']['suggestions']) # this I want to Display on separate window if possible

@@ -14,14 +14,15 @@ The ability to check if a Swedish address has the following valid items:
 
 *   Valid postal code
 *   Valid locality (town, city, village etc)
-*   Valid street address including number & alpha code/stairwell/apartment
-*   A combination of all items in an address should be validated in order to be able to save the address.
-*   Valid street address including number, in combination with zip code and locality
+*   Valid street address including number & alpha code/stairwell/apartment, in combination with zip code and locality
 *   Valid Box number, in combination with zip code and locality
-*   In the first version it will only respond with either "The address is correct", or the address in incorrect, and if
+*   A combination of all items in an address should be validated in order to be able to save the address.
+*   When clicking Check address the message "The address is correct", or the address in incorrect will be displayed, and if
     incorrect it will give the error code and errormessage indicating which element of the address is incorrect.
+*   If address entered is incorrect a message window suggest the correct address
 *   A correct address can saved to a local CSV-file. If the address is incorrect it should not be possible to save the adress
-*   The CSV-file should be able to be viewed by the user.
+*   The CSV-file with saved addresses should be able to be viewed by the user by clicking a View Saved Addresses button.
+*   For demonstration purposes a file with sample Swedish addresses can be viewed by clicking a View Sample Adresses button.
 
 The program must:
 .................
@@ -30,9 +31,8 @@ The program must:
     -   ignore meaningless keystrokes
     -   require a value for all fields
     -   get marked with an error if the value is invalid on focusout
-
 *   prevent saving record when errors are present
-*   prevent checking the record if any field is blank or has invalid characters
+*   prevent checking the record if any field is blank or has invalid characters, and give a warning
 *   It should be possible to use the application without the use of mouse, i.e. just using keyboard inputs.
 
 Functionality not required in version 1
