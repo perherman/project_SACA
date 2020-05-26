@@ -456,8 +456,8 @@ class Application(tk.Tk):
 
         self.records_saved = 0
         self.records_checked = 0
-        self.record_correct = tk.StringVar()
-        self.record_correct.set('disabled') # parameter in order to check if record is correct before saving.
+        #self.record_correct = tk.StringVar()  # not needed!
+        #self.record_correct.set('disabled') # parameter in order to check if record is correct before saving. # Not needed
 
         self.recordform = DataRecordForm(self)
         self.recordform.grid(row=1, padx=20)
@@ -465,10 +465,10 @@ class Application(tk.Tk):
         self.checkbutton = ttk.Button(self, text="Check", command=self.on_check)
         self.checkbutton.grid(sticky="e",row=2, column=0, padx=10, pady=5)
 
-        button_state = self.record_correct.get()
+        #button_state = self.record_correct.get() #not needed
         # print(button_state + 'after') #testing if the button_state has changed after check button
-
-        self.savebutton = ttk.Button(self, text="Save", state = button_state, command=self.on_save)
+        # set state of savebutton directly to 'disabled' (no need to initiate button_state and change via button_state)
+        self.savebutton = ttk.Button(self, text="Save", state = 'disabled', command=self.on_save)
         self.savebutton.grid(sticky="e", row=2, column=1, padx=10, pady=5)
 
         self.samplesbutton =ttk.Button(self, text="Show Samples", command=self.on_show_samples)
@@ -526,10 +526,10 @@ class Application(tk.Tk):
             #print("Address is correct") # testing
             self.status.set("Address is correct.     {} records checked this session".format(self.records_checked))
             # print(data) testing
-            self.savebutton['state'] = tk.NORMAL
+            self.savebutton['state'] = tk.NORMAL  #set the state of savebutton directly!
         else:
             #print("Address is incorrect") # print to test function during development
-            self.savebutton['state'] = tk.DISABLED
+            self.savebutton['state'] = tk.DISABLED #set the state of savebutton directly!
             # print(data) #testing
             error=str(data['response']['errors'])
             translator = Translator()
