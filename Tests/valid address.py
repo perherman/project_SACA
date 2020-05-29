@@ -17,13 +17,25 @@ data = {
     'api_key': '3bb5596dd455959defeb3cd2085c871e'
 }
 
-print(data)
+#print(data)
 response = requests.post('https://valid.geposit.se/1.7/validate/address/se', data=data)
 response.raise_for_status()
 data = response.json()
-#print(data)
+print('data:')
+print(data)
+print('response:')
+print(data.get('response'))
+print('suggestions:')
+#d.get('a', {'j': 'NA'})['j']
+#d.get('a', {}).get('j', 'NA')
 
-if((int)(data['response']['is_valid']) == 1):
+#print(data.get('response'),{'query': 'NA'})['query']
+#d.get('a', {}).get('j')
+print(data.get('response', {}).get('suggestions'))
+print(data.get('response', {}).get('errors'))
+print('=================')
+
+if (int)(data['response']['is_valid']) == 1:
     print("Address was correct")
     #print(data)
 else:
@@ -31,11 +43,16 @@ else:
 
     print("Errors in address")
     print(data['response']['errors'])
+    print(data)
     suggestions = (data['response']['suggestions'])
     #print(len(suggestions))
     suggest = suggestions[0]
-    #print(suggestions)
+    print(suggestions)
+    print()
     print(suggest)
+    print()
+    hela_respons =(data['response'])
+    print(hela_respons)
     street = suggest.get('street') + ' ' + suggest.get('street_number') + ' ' + suggest.get('extra_number') + ' ' + suggest.get('letter')
     postalcode = suggest.get('postalcode')
     localityx = suggest.get('locality')
